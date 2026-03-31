@@ -25,12 +25,16 @@ async function handleGetNewShortURL(req, res) {
     },
     {
       $push: {
-        visiterHistory: {
+        visitorHistory: {
           timestamp: Date.now(),
         },
       },
     },
+    {returnDocument: true}
   );
+  if(!entry){
+    return res.status(404).json({error: "Short URL not found"})
+  }
   return res.redirect(entry.redirectURL);
 }
 
