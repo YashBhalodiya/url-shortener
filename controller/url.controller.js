@@ -9,11 +9,13 @@ async function handleGenerateNewShortURL(req, res) {
     return res.status(400).json({ err: "url is required" });
   }
   const generatedShortId = shortid();
-  await URL.create({
+  const result = await URL.create({
     shortId: generatedShortId,
     redirectURL: body.url,
     visitorHistory: [],
   });
+  console.log(result);
+  
   return res.json({ id: generatedShortId });
 }
 
@@ -26,19 +28,30 @@ async function handleGetNewShortURL(req, res) {
     {
       $push: {
         visitorHistory: {
-          timestamp: Date.now(),
+          timestamp: new Date().toISOString(),
         },
       },
     },
-    {returnDocument: true}
+    { returnDocument: true },
   );
-  if(!entry){
-    return res.status(404).json({error: "Short URL not found"})
+  if (!entry) {
+    return res.status(404).json({ error: "Short URL not found" });
   }
   return res.redirect(entry.redirectURL);
+}
+
+async function handleGetAnalytics(req, res) {
+  const shortId = req.params.shortId;
+  const result = await URL.findOne({shortId});
+  console.log(result);
+  return res.json({
+    clickedHistory: result.visitorHistory.length,
+    analytics: result.visitorHistory,
+  });
 }
 
 module.exports = {
   handleGenerateNewShortURL,
   handleGetNewShortURL,
+  handleGetAnalytics,
 };

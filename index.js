@@ -8,7 +8,7 @@ const app = express()
 app.use(express.json())
 
 // DB Connection
-connectDb("mongodb://localhost:27017/short-url")
+connectDb("mongodb://127.0.0.1:27017/short-url")
 .then(() => console.log("Connect to MongoDB"))
 .catch((err) => console.log("err", err))
 
