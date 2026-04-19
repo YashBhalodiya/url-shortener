@@ -1,5 +1,6 @@
 const shortid = require("shortid");
 const { URL } = require("../model/url.model");
+const UAParser = require("ua-parser-js");
 
 async function handleGenerateNewShortURL(req, res) {
   const body = req.body;
@@ -15,12 +16,15 @@ async function handleGenerateNewShortURL(req, res) {
     visitorHistory: [],
   });
   console.log(result);
-  
+
   return res.json({ id: generatedShortId });
 }
 
 async function handleGetNewShortURL(req, res) {
   const shortId = req.params.shortId;
+  const ua = req.headers["user-agent"] || "";
+  const uaInfo = new UAParser(ua).getResult();
+
   const entry = await URL.findOneAndUpdate(
     {
       shortId,
@@ -29,10 +33,16 @@ async function handleGetNewShortURL(req, res) {
       $push: {
         visitorHistory: {
           timestamp: new Date().toISOString(),
+          device: {
+            browser: uaInfo.browser?.name || "Unknown",
+            os: uaInfo.os?.name || "Unknown",
+            devicetype: uaInfo.device?.type || "desktop",
+          },
+          ip: req.ip
         },
       },
     },
-    { returnDocument: true },
+    { returnDocument: 'after'},
   );
   if (!entry) {
     return res.status(404).json({ error: "Short URL not found" });
@@ -42,7 +52,7 @@ async function handleGetNewShortURL(req, res) {
 
 async function handleGetAnalytics(req, res) {
   const shortId = req.params.shortId;
-  const result = await URL.findOne({shortId});
+  const result = await URL.findOne({ shortId });
   console.log(result);
   return res.json({
     clickedHistory: result.visitorHistory.length,

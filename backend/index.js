@@ -16,4 +16,4 @@ connectDb("mongodb://127.0.0.1:27017/short-url")
 app.use('/url', urlRouter)
 
 
-app.listen(8001, () => console.log("Server is running on 8001"))
+app.listen(8001, '0.0.0.0' , () => console.log("Server is running on 8001"))
