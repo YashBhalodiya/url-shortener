@@ -22,6 +22,10 @@ const urlSchema = mongoose.Schema(
         ip: { type: String },
       },
     ],
+    expiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );

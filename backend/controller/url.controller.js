@@ -1,23 +1,41 @@
 const shortid = require("shortid");
 const { URL } = require("../model/url.model");
 const UAParser = require("ua-parser-js");
+const validUrl = require("valid-url");
 
 async function handleGenerateNewShortURL(req, res) {
-  const body = req.body;
-  console.log(body);
+  const { url, customCode, expiresIn } = req.body;
+  console.log(req.body);
 
-  if (!body.url) {
-    return res.status(400).json({ err: "url is required" });
+  if (!url || !validUrl.isUri(url)) {
+    return res.status(400).json({ err: "Valid url is required" });
   }
-  const generatedShortId = shortid();
+
+  let generatedShortId = customCode;
+  if (!generatedShortId) {
+    generatedShortId = shortid();
+  } else {
+    const existing = await URL.findOne({ shortId: customCode });
+    if (existing) {
+      return res.status(400).json({ err: "Custom code already in use" });
+    }
+  }
+
+  let expiresAt = null;
+  if (expiresIn) {
+    expiresAt = new Date(Date.now() + expiresIn * 1000);
+  }
+
   const result = await URL.create({
     shortId: generatedShortId,
-    redirectURL: body.url,
+    redirectURL: url,
     visitorHistory: [],
+    expiresAt
   });
   console.log(result);
 
-  return res.json({ id: generatedShortId });
+  const shortUrl = `${req.protocol}://${req.get('host')}/${generatedShortId}`;
+  return res.json({ id: generatedShortId, shortId: generatedShortId, shortUrl });
 }
 
 async function handleGetNewShortURL(req, res) {
@@ -26,9 +44,7 @@ async function handleGetNewShortURL(req, res) {
   const uaInfo = new UAParser(ua).getResult();
 
   const entry = await URL.findOneAndUpdate(
-    {
-      shortId,
-    },
+    { shortId },
     {
       $push: {
         visitorHistory: {
@@ -42,21 +58,32 @@ async function handleGetNewShortURL(req, res) {
         },
       },
     },
-    { returnDocument: 'after'},
+    { returnDocument: 'after'}
   );
+
   if (!entry) {
     return res.status(404).json({ error: "Short URL not found" });
   }
+
+  if (entry.expiresAt && new Date(entry.expiresAt) < new Date()) {
+    return res.status(410).json({ error: "Short URL has expired" });
+  }
+
   return res.redirect(entry.redirectURL);
 }
 
 async function handleGetAnalytics(req, res) {
   const shortId = req.params.shortId;
   const result = await URL.findOne({ shortId });
+  
+  if (!result) {
+    return res.status(404).json({ error: "Analytics not found for shortId" });
+  }
+  
   console.log(result);
   return res.json({
-    clickedHistory: result.visitorHistory.length,
-    analytics: result.visitorHistory,
+    totalClicks: result.visitorHistory.length,
+    visitHistory: result.visitorHistory,
   });
 }
 
