@@ -1,43 +1,70 @@
-# 🔗 URL Shortener (Node.js)
+# URL Shortener (Node.js)
 
 A simple and scalable **URL Shortener** built using Node.js and Express that converts long URLs into short, shareable links. This project demonstrates core backend development concepts like routing, database design, redirection, and caching.
 
 ---
 
-## 🚀 Features
+## Features
 
-* 🔗 Shorten long URLs into compact links
-* 🔁 Redirect short URLs to original URLs
-* 📊 Track number of clicks (analytics)
-* 🧾 Store URL history
-* ✨ Custom short URLs (optional)
-* ⏳ URL expiration support (optional)
-* ⚡ Fast redirection using caching
-
----
-
-## 🛠️ Tech Stack
-
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB
-* **Caching (optional):** Redis
+* Shorten long URLs into compact links
+* Redirect short URLs to original URLs
+* Track number of clicks (analytics)
+* Store URL history
+* Custom short URLs (optional)
+* URL expiration support (optional)
+* Fast redirection using caching
 
 ---
 
-## 📂 Project Structure
+## Tech Stack
+
+### Backend
+- Node.js
+- Express.js
+
+### Frontend
+- React (Vite)
+- Tailwind CSS
+
+### Database
+- MongoDB
+
+### Tools
+- ESLint
+
+---
+
+## Project Structure
 
 ```
-src/
- ├── controllers/
- ├── routes/
- ├── models/
- ├── config/
- └── index.js
+.
+├── backend/
+│   ├── config/        # DB config, environment setup
+│   ├── controller/    # Business logic
+│   ├── model/         # Database schemas
+│   ├── routes/        # API routes
+│   ├── tests/         # Backend test cases
+│   ├── index.js       # Entry point
+│   ├── package.json
+│   └── package-lock.json
+│
+├── frontend/
+│   ├── public/        # Static assets
+│   ├── src/           # React/Vite source code
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── eslint.config.js
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## ⚙️ API Endpoints
+## API Endpoints
 
 ### 1. Shorten URL
 
@@ -73,7 +100,7 @@ Redirects to the original URL.
 
 ---
 
-## 🧠 How It Works
+## How It Works
 
 1. User submits a long URL
 2. Server generates a unique short code
@@ -83,20 +110,10 @@ Redirects to the original URL.
 
 ---
 
-## 📈 Future Improvements
+## Future Improvements
 
-* 📊 Advanced analytics dashboard
-* 🌍 Geo-location tracking
-* 📱 QR code generation
-* 🚀 Rate limiting & security enhancements
-* ☁️ Deployment with custom domain
-
----
-
-## 💡 Learning Outcomes
-
-* REST API design
-* Database schema modeling
-* URL encoding techniques (Base62)
-* Caching strategies
-* Backend scalability concepts
+* Advanced analytics dashboard
+* Geo-location tracking
+* QR code generation
+* Rate limiting & security enhancements
+* Deployment with custom domain
