@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # backend service
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongo:27017/urlshortener # Points to the local mongo container
+    depends_on:
+      - mongo
+
+  # frontend service
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=http://localhost:5000
+        - VITE_BASE_URL=http://localhost:5000
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+  # mongo db service
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
