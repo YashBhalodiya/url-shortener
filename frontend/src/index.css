@@ -6,8 +6,19 @@
 
 @layer base {
   body {
-    @apply bg-paper text-ink font-body antialiased;
+    @apply bg-paper text-ink font-body antialiased min-h-screen relative;
   }
+  
+  /* Subtle mesh pattern for extra richness */
+  body::before {
+    content: "";
+    @apply absolute inset-0 max-w-full;
+    background-image: radial-gradient(rgba(16, 17, 20, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+    z-index: -1;
+    pointer-events: none;
+  }
+  
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight font-semibold;
   }
