@@ -25,7 +25,9 @@ const urlSchema = mongoose.Schema(
     expiresAt: {
       type: Date,
       default: null,
+      expires: 0
     },
+    isExpired: Boolean
   },
   { timestamps: true },
 );

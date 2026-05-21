@@ -32,7 +32,7 @@ async function handleGenerateNewShortURL(req, res) {
     visitorHistory: [],
     expiresAt
   });
-  console.log(result);
+  // console.log(result);
 
   const shortUrl = `${req.protocol}://${req.get('host')}/${generatedShortId}`;
   return res.json({ id: generatedShortId, shortId: generatedShortId, shortUrl });

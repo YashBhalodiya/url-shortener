@@ -12,7 +12,7 @@ app.use(express.json())
 app.use(cors())
 
 // DB Connection
-const MONGO_URI = process.env.MONGO_URI || "mongodb://mongo:27017/short-url" // if have connetion string in env, if not then the local will get connected
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/short-url" // if have connetion string in env, if not then the local will get connected
 connectDb(MONGO_URI)
   .then(() => console.log("Connect to MongoDB"))
   .catch((err) => console.log("err", err))
